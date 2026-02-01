@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriConnect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f9f4;
+      margin: 0;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      padding: 20px;
+    }
+    .product {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+    input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    h2 {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+<header>🌾 AgriConnect – Farmer to Buyer Marketplace</header>
+
+<div class="container">
+
+  <h2>Add Crop (Farmer)</h2>
+  <input id="name" placeholder="Crop Name">
+  <input id="price" placeholder="Price per Kg">
+  <input id="qty" placeholder="Quantity (Kg)">
+  <button onclick="addProduct()">Add Crop</button>
+
+  <h2>Available Crops (Buyer)</h2>
+  <div id="products"></div>
+
+</div>
+
+<script>
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+
+  function renderProducts() {
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    products.forEach((p, index) => {
+      container.innerHTML += `
+        <div class="product">
+          <strong>${p.name}</strong><br>
+          Price: ₹${p.price}/kg<br>
+          Available: ${p.qty} kg<br><br>
+          <button onclick="buy(${index})">Buy 1 Kg</button>
+        </div>
+      `;
+    });
+
+    localStorage.setItem("products", JSON.stringify(products));
+  }
+
+  function addProduct() {
+    const name = document.getElementById("name").value;
+    const price = document.getElementById("price").value;
+    const qty = document.getElementById("qty").value;
+
+    if (!name || !price || !qty) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    products.push({ name, price, qty });
+    renderProducts();
+
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("qty").value = "";
+  }
+
+  function buy(index) {
+    if (products[index].qty > 0) {
+      products[index].qty--;
+      alert("Order placed successfully!");
+    } else {
+      alert("Out of stock!");
+    }
+    renderProducts();
+  }
+
+  renderProducts();
+</script>
+
+</body>
+</html>
